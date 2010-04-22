@@ -59,7 +59,7 @@ namespace Henge3D.Holodeck
 			else
 			{
 				view.Device.RenderState.FillMode = FillMode.Solid;
-				view.Device.RenderState.CullMode = CullMode.CullClockwiseFace;
+				view.Device.RenderState.CullMode = CullMode.CullCounterClockwiseFace;
 			}
 
 			foreach (var mesh in _model.Meshes)

@@ -51,7 +51,6 @@
       <Name>small_cube</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -59,20 +58,17 @@
       <Name>lblock</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
     </Compile>
     <Compile Include="models\sphere.fbx">
       <Name>sphere</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
       <ProcessorParameters_DefaultElasticity>0.6</ProcessorParameters_DefaultElasticity>
     </Compile>
     <Compile Include="models\triangle.fbx">
       <Name>triangle</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -80,7 +76,6 @@
       <Name>obelisk</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
       <ProcessorParameters_Scale>0.5</ProcessorParameters_Scale>
     </Compile>
   </ItemGroup>
@@ -89,7 +84,6 @@
       <Name>capsule</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +91,6 @@
       <Name>torus</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -105,7 +98,6 @@
       <Name>slab</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
       <ProcessorParameters_Scale>0.5</ProcessorParameters_Scale>
     </Compile>
   </ItemGroup>
@@ -114,7 +106,6 @@
       <Name>cone</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
-      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
     </Compile>
   </ItemGroup>
 </Project>

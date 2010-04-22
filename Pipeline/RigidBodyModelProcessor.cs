@@ -13,7 +13,7 @@ using Henge3D.Physics;
 
 namespace Henge3D.Pipeline
 {
-	[ContentProcessor(DisplayName="Rigid Body Model Processor")]
+	[ContentProcessor(DisplayName = "Rigid Body Model Processor")]
 	public class RigidBodyModelProcessor : ModelProcessor
 	{
 		const string TYPE_ATTR_NAME = "type";
@@ -22,7 +22,14 @@ namespace Henge3D.Pipeline
 		const string DENSITY_ATTR_NAME = "density";
 		const string SHAPE_ATTR_NAME = "shape";
 
+		private PhysicalShape _defaultShape = PhysicalShape.Polyhedron;
 		private float _defaultDensity = 1f, _defaultElasticity = 0f, _defaultRoughness = 0.5f;
+		private WindingOrder _windingOrder = WindingOrder.Clockwise;
+
+		[DefaultValue(PhysicalShape.Polyhedron)]
+		[DisplayName("Default Shape")]
+		[Description("The default shape type to use for meshes without a shape attribute.")]
+		public PhysicalShape DefaultShape { get { return _defaultShape; } set { _defaultShape = value; } }
 
 		[DefaultValue(1f)]
 		[DisplayName("Default Density")]
@@ -38,6 +45,11 @@ namespace Henge3D.Pipeline
 		[DisplayName("Default Roughness")]
 		[Description("The default roughness of all meshes, used when calculating friction.")]
 		public float DefaultRoughness { get { return _defaultRoughness; } set { _defaultRoughness = value; } }
+
+		[DefaultValue(WindingOrder.Clockwise)]
+		[DisplayName("Vertex Winding Order")]
+		[Description("The winding order that the processor should expect (after SwapWindingOrder is applied, if set to true).")]
+		public WindingOrder WindingOrder { get { return _windingOrder; } set { _windingOrder = value; } }
 
 		public override ModelContent Process(NodeContent input, ContentProcessorContext context)
 		{
@@ -66,7 +78,7 @@ namespace Henge3D.Pipeline
 					elasticity = attributes[mesh.Name].GetAttribute(ELASTICITY_ATTR_NAME, _defaultElasticity);
 					roughness = attributes[mesh.Name].GetAttribute(ROUGHNESS_ATTR_NAME, _defaultRoughness);
 					density = attributes[mesh.Name].GetAttribute(DENSITY_ATTR_NAME, _defaultDensity);
-					shape = attributes[mesh.Name].GetAttribute(SHAPE_ATTR_NAME, PhysicalShape.Mesh);
+					shape = attributes[mesh.Name].GetAttribute(SHAPE_ATTR_NAME, _defaultShape);
 				}
 
 				var meshCenterOfMass = Vector3.Zero;
@@ -75,6 +87,11 @@ namespace Henge3D.Pipeline
 
 				int[] indices = mesh.IndexBuffer.ToArray();
 				Vector3[] vertices = MeshToVertexArray(context.TargetPlatform, mesh);
+
+				if (_windingOrder == WindingOrder.Clockwise)
+				{
+					ReverseWindingOrder(indices);
+				}
 
 				switch (shape)
 				{
@@ -153,7 +170,7 @@ namespace Henge3D.Pipeline
 			return model;
 		}
 
-		private float GetMaxDistance(Vector3 center, IList<Vector3> vertices)
+		private static float GetMaxDistance(Vector3 center, IList<Vector3> vertices)
 		{
 			float maxDist = 0f;
 			for (int i = 0; i < vertices.Count; i++)
@@ -167,7 +184,7 @@ namespace Henge3D.Pipeline
 			return (float)Math.Sqrt(maxDist);
 		}
 
-		private Vector3 GetMeshTranslation(ModelMeshContent mesh)
+		private static Vector3 GetMeshTranslation(ModelMeshContent mesh)
 		{
 			var pos = Vector3.Zero;
 			var bone = mesh.ParentBone;
@@ -179,7 +196,7 @@ namespace Henge3D.Pipeline
 			return pos;
 		}
 
-		private Vector3[] MeshToVertexArray(TargetPlatform platform, ModelMeshContent mesh)
+		private static Vector3[] MeshToVertexArray(TargetPlatform platform, ModelMeshContent mesh)
 		{
 			MemoryStream ms;
 			if (platform == TargetPlatform.Xbox360)
@@ -231,7 +248,7 @@ namespace Henge3D.Pipeline
 
 			var transforms = new Stack<Matrix>();
 			var bone = mesh.ParentBone;
-			while(bone != null)
+			while (bone != null)
 			{
 				transforms.Push(bone.Transform);
 				bone = bone.Parent;
@@ -247,7 +264,7 @@ namespace Henge3D.Pipeline
 			return vertices;
 		}
 
-		private byte[] ReverseByteOrder(byte[] source)
+		private static byte[] ReverseByteOrder(byte[] source)
 		{
 			byte[] dest = new byte[source.Length];
 			for (int i = 0; i < source.Length; i += 4)
@@ -258,6 +275,16 @@ namespace Henge3D.Pipeline
 				dest[i + 3] = source[i];
 			}
 			return dest;
+		}
+
+		private static void ReverseWindingOrder(int[] indices)
+		{
+			for (int i = 0; i < indices.Length; i += 3)
+			{
+				indices[i + 1] = indices[i + 1] ^ indices[i + 2];
+				indices[i + 2] = indices[i + 1] ^ indices[i + 2];
+				indices[i + 1] = indices[i + 1] ^ indices[i + 2];
+			}
 		}
 	}
 }

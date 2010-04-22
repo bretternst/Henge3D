@@ -84,6 +84,7 @@ namespace Henge3D.Collision
 			_tasks.AddTask(SortAndSweepY);
 			_tasks.AddTask(SortAndSweepZ);
 			_tasks.Execute();
+			_newItems = 0;
 
 			for (int i = 0; i < _rows; i++)
 			{
@@ -224,13 +225,14 @@ namespace Henge3D.Collision
 		{
 			for (int i = 0; i < _axisX.Count; i++)
 			{
+				var val = _axisX[i];
 				int j = i - 1;
-				while (j >= 0 && _axisX[j].BoundingBox.Minimum.X > _axisX[i].BoundingBox.Minimum.X)
+				while (j >= 0 && _axisX[j].BoundingBox.Minimum.X > val.BoundingBox.Minimum.X)
 				{
 					_axisX[j + 1] = _axisX[j];
 					--j;
 				}
-				_axisX[j + 1] = _axisX[i];
+				_axisX[j + 1] = val;
 			}
 		}
 
@@ -238,13 +240,14 @@ namespace Henge3D.Collision
 		{
 			for (int i = 0; i < _axisY.Count; i++)
 			{
+				var val = _axisY[i];
 				int j = i - 1;
-				while (j >= 0 && _axisY[j].BoundingBox.Minimum.Y > _axisY[i].BoundingBox.Minimum.Y)
+				while (j >= 0 && _axisY[j].BoundingBox.Minimum.Y > val.BoundingBox.Minimum.Y)
 				{
 					_axisY[j + 1] = _axisY[j];
 					--j;
 				}
-				_axisY[j + 1] = _axisY[i];
+				_axisY[j + 1] = val;
 			}
 		}
 
@@ -252,13 +255,14 @@ namespace Henge3D.Collision
 		{
 			for (int i = 0; i < _axisZ.Count; i++)
 			{
+				var val = _axisZ[i];
 				int j = i - 1;
-				while (j >= 0 && _axisZ[j].BoundingBox.Minimum.Z > _axisZ[i].BoundingBox.Minimum.Z)
+				while (j >= 0 && _axisZ[j].BoundingBox.Minimum.Z > val.BoundingBox.Minimum.Z)
 				{
 					_axisZ[j + 1] = _axisZ[j];
 					--j;
 				}
-				_axisZ[j + 1] = _axisZ[i];
+				_axisZ[j + 1] = val;
 			}
 		}
 

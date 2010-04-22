@@ -19,4 +19,10 @@ namespace Henge3D.Pipeline
 		Sphere,
 		Capsule
 	}
+
+	public enum WindingOrder
+	{
+		Clockwise,
+		CounterClockwise
+	}
 }
