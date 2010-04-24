@@ -8,6 +8,28 @@ using Henge3D.Pipeline;
 namespace Henge3D.Physics
 {
 	/// <summary>
+	/// Provides a signature for event handlers that respond to collision events.
+	/// </summary>
+	/// <param name="sender">The rigid body object firing the event.</param>
+	/// <param name="other">The rigid body object that the sender collided with.</param>
+	/// <returns></returns>
+	public delegate bool CollisionEventHandler(RigidBody sender, RigidBody other);
+
+	/// <summary>
+	/// Provides a signature for event handlers that respond to separation events.
+	/// </summary>
+	/// <param name="sender">The rigid body object firing the event.</param>
+	/// <param name="other">The rigid body object that the sender separated from.</param>
+	public delegate void SeparationEventHandler(RigidBody sender, RigidBody other);
+
+	internal enum ContactStateFlags
+	{
+		IsInContact = 1,
+		IsSuppressed = 2,
+		WasInContact = 4
+	}
+
+	/// <summary>
 	/// Represents a single rigid body object, defined as a form composed of one or more collision skin parts. A rigid body always acts
 	/// as a single unit which can be moved around the world and interact with other bodies through contact or other constraints.
 	/// </summary>
@@ -20,6 +42,7 @@ namespace Henge3D.Physics
 		private bool _isActive = true, _isMovable = true, _isFast = false;
 		private List<Constraint> _contacts;
 		private List<Constraint> _constraints;
+		private Dictionary<RigidBody, int> _contactStates;
 
 		internal Transform World, WorldInverse;
 		internal Vector3 Force, Torque;
@@ -71,11 +94,30 @@ namespace Henge3D.Physics
 		/// </summary>
 		public IList<Constraint> Constraints { get { return _constraints; } }
 
-		public Transform Transform, TransformInverse;
+		/// <summary>
+		/// The current transform applied to the rigid body, indicating its position and orientation. This can be applied to a related visual
+		/// entity to keep it in sync.
+		/// </summary>
+		public Transform Transform;
+
+		/// <summary>
+		/// Fires when this rigid body first comes into contact with another rigid body. The handler is only called during the first frame
+		/// in which the bodies are in contact. If the handler returns true, the collision will be suppressed and the bodies will
+		/// inter-penetrate until they are separated.
+		/// </summary>
+		public CollisionEventHandler OnCollision;
+
+		/// <summary>
+		/// Fires when this rigid body is no longer in contact with another rigid body.
+		/// </summary>
+		public SeparationEventHandler OnSeparation;
+
 		internal Island Island { get { return _island; } set { _island = value; } }
 		internal IList<Constraint> Contacts { get { return _contacts; } }
 		internal bool CanDeactivate { get { return _inactiveTime >= _manager.DeactivationTime; } }
 		internal bool IsFast { get { return _isFast; } }
+
+		internal Dictionary<RigidBody, int> ContactStates;
 
 		/// <summary>
 		/// Construct a new rigid body.
@@ -373,7 +415,6 @@ namespace Henge3D.Physics
 			World.Invert(out WorldInverse);
 			MassProperties.Transform(ref Mass, ref World, out MassWorld);
 			Transform = World;
-			TransformInverse = WorldInverse;
 		}
 
 		private void DampVelocity()

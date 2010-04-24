@@ -14,7 +14,6 @@ namespace Henge3D
 	public class Composition
 	{
 		internal uint Flags;
-		internal AlignedBox BoundingBox = AlignedBox.Null;
 		private List<Part> _parts;
 
 		/// <summary>
@@ -24,6 +23,13 @@ namespace Henge3D
 		{
 			_parts = new List<Part>();
 		}
+
+		/// <summary>
+		/// The axis-aligned box encompassing every part of the composition, for the purposes of collision detection. This box
+		/// may be manipulated by other components to expand the area over which collision detection is performed, so it is not
+		/// always the smallest possible box.
+		/// </summary>
+		public AlignedBox BoundingBox = AlignedBox.Null;
 
 		protected IList<Part> Parts { get { return _parts; } }
 

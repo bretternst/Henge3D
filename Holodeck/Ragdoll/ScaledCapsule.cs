@@ -41,6 +41,8 @@ namespace Henge3D.Holodeck
 
 		public void Draw(IViewManager view)
 		{
+			view.Device.RenderState.CullMode = CullMode.CullCounterClockwiseFace;
+
 			foreach (var mesh in _model.Meshes)
 			{
 				foreach (BasicEffect effect in mesh.Effects)

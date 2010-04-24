@@ -77,6 +77,7 @@ namespace Henge3D.Physics
 
 		internal ContactPoint[] Points { get { return _points; } }
 		internal Vector3 Normal { get { return _normal; } set { _normal = value; } }
+		internal bool IsCollisionSuppressed { get; set; }
 
 		internal void SetParameters(RigidBody a, RigidBody b, 
 			float restitution, float friction)
@@ -105,6 +106,11 @@ namespace Henge3D.Physics
 		/// </summary>
 		public override void PreProcess()
 		{
+			if (this.IsCollisionSuppressed)
+			{
+				return;
+			}
+
 			RigidBody a = BodyA, b = BodyB;
 			var cached = b.Manager.ContactCache.Get(a, b);
 
@@ -237,6 +243,11 @@ namespace Henge3D.Physics
 		/// </summary>
 		public override void ProcessVelocity()
 		{
+			if (this.IsCollisionSuppressed)
+			{
+				return;
+			}
+
 			RigidBody a = BodyA, b = BodyB;
 
 			for (int i = 0; i < _count; i++)
@@ -297,6 +308,11 @@ namespace Henge3D.Physics
 		/// <returns>Returns a value indicating whether the constraint has been satisfied.</returns>
 		public override bool ProcessPosition()
 		{
+			if (this.IsCollisionSuppressed)
+			{
+				return true;
+			}
+
 			RigidBody a = BodyA, b = BodyB;
 
 			bool satisfied = true;
@@ -342,6 +358,7 @@ namespace Henge3D.Physics
 			_normal = Vector3.Zero;
 			_count = 0;
 			_restitution = _friction = 0f;
+			this.IsCollisionSuppressed = false;
 		}
 	}
 }

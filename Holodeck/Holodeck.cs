@@ -499,6 +499,51 @@ namespace Henge3D.Holodeck
 						_physics.Add(j3);
 					}
 					break;
+				case 9:
+					{
+						var a1 = new SolidThing(this, cubeModel);
+						a1.SetWorld(new Vector3(0f, -2f, 0.5f));
+						_physics.Add(a1);
+						var b1 = new SolidThing(this, cubeModel);
+						b1.SetWorld(new Vector3(0f, 2f, 0.5f));
+						_physics.Add(b1);
+
+						// Only suppress the first contact.
+						int collCounter = 0;
+						a1.OnCollision = (a, b) =>
+							{
+								if (b == b1)
+								{
+									System.Diagnostics.Debug.WriteLine("A reported collision with B ("+collCounter+").");
+									return collCounter++ == 0;
+								}
+								return false;
+							};
+						a1.OnSeparation = (a, b) =>
+							{
+								if (b == b1)
+								{
+									System.Diagnostics.Debug.WriteLine("A reported separation from B.");
+								}
+							};
+						b1.OnCollision = (a, b) =>
+							{
+								if (b == a1)
+								{
+									System.Diagnostics.Debug.WriteLine("B reported collision with A.");
+									return false;
+								}
+								return false;
+							};
+						b1.OnSeparation = (a, b) =>
+							{
+								if (b == a1)
+								{
+									System.Diagnostics.Debug.WriteLine("B reported separation from A.");
+								}
+							};
+					}
+					break;
 				default:
 					break;
 			}

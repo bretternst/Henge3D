@@ -199,6 +199,89 @@ namespace Henge3D.Physics
 					c.BodyB.Contacts.Add(c);
 					if (c.BodyA.IsActive && !c.BodyB.IsActive && c.BodyB.IsMovable) Activate(c.BodyB);
 					if (!c.BodyA.IsActive && c.BodyA.IsMovable && c.BodyB.IsActive) Activate(c.BodyA);
+
+					this.UpdateContactStates(c.BodyA, c.BodyB);
+					this.UpdateContactStates(c.BodyB, c.BodyA);
+
+					c.IsCollisionSuppressed = (c.BodyA.ContactStates != null && (c.BodyA.ContactStates[c.BodyB] & (int)ContactStateFlags.IsSuppressed) > 0) ||
+						(c.BodyB.ContactStates != null && (c.BodyB.ContactStates[c.BodyA] & (int)ContactStateFlags.IsSuppressed) > 0);
+				}
+			}
+		}
+
+		private bool UpdateContactStates(RigidBody a, RigidBody b)
+		{
+			if (b.OnCollision != null || b.OnSeparation != null)
+			{
+				if (b.ContactStates == null)
+				{
+					b.ContactStates = new Dictionary<RigidBody, int>();
+				}
+				if (!b.ContactStates.ContainsKey(a))
+				{
+					b.ContactStates.Add(a, 0);
+				}
+				b.ContactStates[a] |= (int)ContactStateFlags.IsInContact;
+				if ((b.ContactStates[a] & (int)ContactStateFlags.WasInContact) == 0)
+				{
+					if (b.OnCollision != null && b.OnCollision(b, a))
+					{
+						b.ContactStates[a] |= (int)ContactStateFlags.IsSuppressed;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		// To support modifying the dictionary's values while enumerating the list of bodies.
+		private static List<RigidBody> tempBodies = new List<RigidBody>();
+
+		public void ProcessSeparations(IList<RigidBody> bodies)
+		{
+			for (int i = 0; i < bodies.Count; i++)
+			{
+				if (bodies[i].ContactStates != null)
+				{
+					// AddRange would require IEnumerable<T>, creating garbage...
+					foreach (var key in bodies[i].ContactStates.Keys)
+					{
+						tempBodies.Add(key);
+					}
+					for (int j = 0; j < tempBodies.Count; j++)
+					{
+						var key = tempBodies[j];
+						var val = bodies[i].ContactStates[key];
+						if ((val & (int)ContactStateFlags.WasInContact) > 0 &&
+							(val & (int)ContactStateFlags.IsInContact) == 0)
+						{
+							val = 0;
+							if (bodies[i].OnSeparation != null)
+							{
+								bodies[i].OnSeparation(bodies[i], key);
+							}
+						}
+
+						if (val == 0)
+						{
+							// I debated whether to actually remove separating items for fear that changing the dictionary
+							// too much would result in re-bucketing and garbage for objects that collide with lots of other objects.
+							// Fears may be unfounded. We'll try it for now.
+							bodies[i].ContactStates.Remove(key);
+						}
+						else
+						{
+							// Shift the IsInContact bit field to WasInContact, leaving IsSuppressed intact
+							bodies[i].ContactStates[key] =
+								((val & (int)ContactStateFlags.IsSuppressed) |
+								((val & (int)ContactStateFlags.IsInContact) > 0 ? (int)ContactStateFlags.WasInContact : 0));
+						}
+					}
+					if (bodies[i].OnCollision == null && bodies[i].OnSeparation == null)
+					{
+						bodies[i].ContactStates = null;
+					}
+					tempBodies.Clear();
 				}
 			}
 		}

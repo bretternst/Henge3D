@@ -28,4 +28,4 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.8.1002.2")]
+[assembly: AssemblyVersion("0.9.1004.1")]

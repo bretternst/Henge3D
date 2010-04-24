@@ -305,6 +305,7 @@ namespace Henge3D.Physics
 			// detect collisions
 			_broadPhase.Execute(_contacts);
 			_contacts.PropagateContacts();
+			_contacts.ProcessSeparations(this.Bodies);
 
 			// organize all objects into islands and solve each island
 			BuildIslands();
