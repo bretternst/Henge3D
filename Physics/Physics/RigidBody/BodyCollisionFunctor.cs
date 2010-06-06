@@ -203,8 +203,8 @@ namespace Henge3D.Physics
 					this.UpdateContactStates(c.BodyA, c.BodyB);
 					this.UpdateContactStates(c.BodyB, c.BodyA);
 
-					c.IsCollisionSuppressed = (c.BodyA.ContactStates != null && (c.BodyA.ContactStates[c.BodyB] & (int)ContactStateFlags.IsSuppressed) > 0) ||
-						(c.BodyB.ContactStates != null && (c.BodyB.ContactStates[c.BodyA] & (int)ContactStateFlags.IsSuppressed) > 0);
+					c.IsCollisionSuppressed = (c.BodyA.ContactStates != null && (c.BodyA.ContactStates[c.BodyB] & ContactStateFlags.IsSuppressed) > 0) ||
+						(c.BodyB.ContactStates != null && (c.BodyB.ContactStates[c.BodyA] & ContactStateFlags.IsSuppressed) > 0);
 				}
 			}
 		}
@@ -215,18 +215,18 @@ namespace Henge3D.Physics
 			{
 				if (b.ContactStates == null)
 				{
-					b.ContactStates = new Dictionary<RigidBody, int>();
+					b.ContactStates = new Dictionary<RigidBody, ContactStateFlags>();
 				}
 				if (!b.ContactStates.ContainsKey(a))
 				{
 					b.ContactStates.Add(a, 0);
 				}
-				b.ContactStates[a] |= (int)ContactStateFlags.IsInContact;
-				if ((b.ContactStates[a] & (int)ContactStateFlags.WasInContact) == 0)
+				b.ContactStates[a] |= ContactStateFlags.IsInContact;
+				if ((b.ContactStates[a] & ContactStateFlags.WasInContact) == 0)
 				{
 					if (b.OnCollision != null && b.OnCollision(b, a))
 					{
-						b.ContactStates[a] |= (int)ContactStateFlags.IsSuppressed;
+						b.ContactStates[a] |= ContactStateFlags.IsSuppressed;
 						return true;
 					}
 				}
@@ -252,8 +252,8 @@ namespace Henge3D.Physics
 					{
 						var key = tempBodies[j];
 						var val = bodies[i].ContactStates[key];
-						if ((val & (int)ContactStateFlags.WasInContact) > 0 &&
-							(val & (int)ContactStateFlags.IsInContact) == 0)
+						if ((val & ContactStateFlags.WasInContact) > 0 &&
+							(val & ContactStateFlags.IsInContact) == 0)
 						{
 							val = 0;
 							if (bodies[i].OnSeparation != null)
@@ -273,8 +273,8 @@ namespace Henge3D.Physics
 						{
 							// Shift the IsInContact bit field to WasInContact, leaving IsSuppressed intact
 							bodies[i].ContactStates[key] =
-								((val & (int)ContactStateFlags.IsSuppressed) |
-								((val & (int)ContactStateFlags.IsInContact) > 0 ? (int)ContactStateFlags.WasInContact : 0));
+								((val & ContactStateFlags.IsSuppressed) |
+								((val & ContactStateFlags.IsInContact) > 0 ? ContactStateFlags.WasInContact : 0));
 						}
 					}
 					if (bodies[i].OnCollision == null && bodies[i].OnSeparation == null)

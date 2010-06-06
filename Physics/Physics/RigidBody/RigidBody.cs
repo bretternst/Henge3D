@@ -22,6 +22,7 @@ namespace Henge3D.Physics
 	/// <param name="other">The rigid body object that the sender separated from.</param>
 	public delegate void SeparationEventHandler(RigidBody sender, RigidBody other);
 
+	[Flags]
 	internal enum ContactStateFlags
 	{
 		IsInContact = 1,
@@ -117,7 +118,7 @@ namespace Henge3D.Physics
 		internal bool CanDeactivate { get { return _inactiveTime >= _manager.DeactivationTime; } }
 		internal bool IsFast { get { return _isFast; } }
 
-		internal Dictionary<RigidBody, int> ContactStates;
+		internal Dictionary<RigidBody, ContactStateFlags> ContactStates;
 
 		/// <summary>
 		/// Construct a new rigid body.
