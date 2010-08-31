@@ -43,7 +43,7 @@ namespace Henge3D.Holodeck
 			gdm.PreferredBackBufferWidth = 1280;
 #endif
 
-			this.IsFixedTimeStep = false;
+			this.IsFixedTimeStep = true;
 			TaskManager.IsThreadingEnabled = false;
 
 			_viewManager = new ViewManager(this);
@@ -69,8 +69,6 @@ namespace Henge3D.Holodeck
 			var state = new FreeLookState(_stateManager);
 			state.MovementSpeed = 10f;
 			_stateManager.SetState(state);
-
-			_physics.Gravity = new Vector3(0f, 0f, -10f);
 			_physics.IsIntegratedOnUpdate = true;
 
 			CreateScene(0);
@@ -188,7 +186,7 @@ namespace Henge3D.Holodeck
 			base.Update(gameTime);
 		}
 
-		void SpawnSelectedObject()
+		private void SpawnSelectedObject()
 		{
 			Vector3 vDir = _viewManager.Direction;
 
@@ -215,7 +213,7 @@ namespace Henge3D.Holodeck
 #endif
 		}
 
-		void SpawnRagdoll()
+		private void SpawnRagdoll()
 		{
 			Vector3 vDir = _viewManager.Direction;
 
@@ -273,6 +271,7 @@ namespace Henge3D.Holodeck
 
 			Room room = new Room(this);
 			_physics.Add(room);
+			_physics.Gravity = new Vector3(0f, 0f, -9.8f);
 
 			Model cubeModel = this.Content.Load<Model>("models/small_cube");
 			Model obeliskModel = this.Content.Load<Model>("models/obelisk");
@@ -501,47 +500,16 @@ namespace Henge3D.Holodeck
 					break;
 				case 9:
 					{
-						var a1 = new SolidThing(this, cubeModel);
-						a1.SetWorld(new Vector3(0f, -2f, 0.5f));
-						_physics.Add(a1);
-						var b1 = new SolidThing(this, cubeModel);
-						b1.SetWorld(new Vector3(0f, 2f, 0.5f));
-						_physics.Add(b1);
+						var a = new SolidThing(this, sphereModel);
+						a.Skin.Remove(a.Skin[0]);
+						a.Skin.Add(new SpherePart(new Sphere(Vector3.Zero, 0.25f)), new Material(0f, 0.5f));
+						a.SetWorld(7.0f, new Vector3(0f, 0f, 5f), Quaternion.Identity);
+						a.MassProperties = MassProperties.Immovable;
+						_physics.Add(a);
 
-						// Only suppress the first contact.
-						int collCounter = 0;
-						a1.OnCollision = (a, b) =>
-							{
-								if (b == b1)
-								{
-									System.Diagnostics.Debug.WriteLine("A reported collision with B ("+collCounter+").");
-									return collCounter++ == 0;
-								}
-								return false;
-							};
-						a1.OnSeparation = (a, b) =>
-							{
-								if (b == b1)
-								{
-									System.Diagnostics.Debug.WriteLine("A reported separation from B.");
-								}
-							};
-						b1.OnCollision = (a, b) =>
-							{
-								if (b == a1)
-								{
-									System.Diagnostics.Debug.WriteLine("B reported collision with A.");
-									return false;
-								}
-								return false;
-							};
-						b1.OnSeparation = (a, b) =>
-							{
-								if (b == a1)
-								{
-									System.Diagnostics.Debug.WriteLine("B reported separation from A.");
-								}
-							};
+						_physics.Add(new SingularityForce(new Vector3(0f, 0f, 5f), 1E12f));
+
+						_physics.Gravity = Vector3.Zero;
 					}
 					break;
 				default:

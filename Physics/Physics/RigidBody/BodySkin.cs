@@ -12,7 +12,7 @@ namespace Henge3D.Physics
 	/// </summary>
 	public sealed class BodySkin : Composition
 	{
-		private Dictionary<Part, Material> _materials;
+		private List<Material> _materials;
 		private RigidBody _owner;
 		private Material _material;
 		private Transform _transformInverse;
@@ -20,7 +20,7 @@ namespace Henge3D.Physics
 		internal BodySkin(RigidBody owner)
 		{
 			_owner = owner;
-			_materials = new Dictionary<Part, Material>();
+			_materials = new List<Material>();
 		}
 
 		/// <summary>
@@ -37,11 +37,41 @@ namespace Henge3D.Physics
 		/// Add a new part to the collision skin.
 		/// </summary>
 		/// <param name="part">The part to add.</param>
+		public override void Add(Part part)
+		{
+			base.Add(part);
+			_materials.Add(_material);
+		}
+
+		/// <summary>
+		/// Removes a part from the collision skin.
+		/// </summary>
+		/// <param name="part">The part to remove.</param>
+		/// <returns>Returns a value indicating whether the part was successfully removed. If the part is not a member of the collection,
+		/// this value will be false.</returns>
+		public override bool Remove(Part part)
+		{
+			int idx = this.Parts.IndexOf(part);
+			if (base.Remove(part))
+			{
+				_materials.RemoveAt(idx);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Add a new part to the collision skin.
+		/// </summary>
+		/// <param name="part">The part to add.</param>
 		/// <param name="material">The material to apply to the part.</param>
 		public void Add(Part part, Material material)
 		{
 			base.Add(part);
-			_materials.Add(part, material);
+			_materials.Add(material);
 		}
 
 		/// <summary>
@@ -51,7 +81,7 @@ namespace Henge3D.Physics
 		/// <returns>Returns the part's material.</returns>
 		public Material Material(Part part)
 		{
-			return _materials.ContainsKey(part) ? _materials[part] : _material;
+			return _materials[this.Parts.IndexOf(part)];
 		}
 
 		/// <summary>

@@ -55,6 +55,7 @@ namespace Henge3D.Holodeck
 
 		public Room(Game game)
 		{
+			this.Skin.DefaultMaterial = new Material(1f, 0.5f);
 			this.Skin.Add(
 				new PlanePart(new Vector3(0, 0, 1), -Vector3.UnitZ),
 				new PlanePart(new Vector3(0, 0, 0), Vector3.UnitZ),
@@ -63,7 +64,6 @@ namespace Henge3D.Holodeck
 				new PlanePart(new Vector3(1, 0, 0), -Vector3.UnitX),
 				new PlanePart(new Vector3(-1, 0, 0), Vector3.UnitX)
 				);
-			this.Skin.DefaultMaterial = new Material(1f, 0.5f);
 			this.SetWorld(_scale, Vector3.Zero, Quaternion.Identity);
 
 			int ts = 40;

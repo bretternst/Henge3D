@@ -49,7 +49,7 @@ namespace Henge3D
 		/// Add a new part to the composition.
 		/// </summary>
 		/// <param name="part">The part to add. This object must not already be owned by another composition.</param>
-		public void Add(Part part)
+		public virtual void Add(Part part)
 		{
 			if (part.Owner != null)
 				throw new ArgumentException("The part already belongs to a composition.");
@@ -58,6 +58,17 @@ namespace Henge3D
 			AlignedBox tmp;
 			part.BoundingBox(out tmp);
 			AlignedBox.Merge(ref BoundingBox, ref tmp, out BoundingBox);
+		}
+
+		/// <summary>
+		/// Remove a part from the composition.
+		/// </summary>
+		/// <param name="part">The part to remove.</param>
+		/// <returns>Returns a value indicating whether the part was successfully removed. If the part is not a member of the collection,
+		/// this value will be false.</returns>
+		public virtual bool Remove(Part part)
+		{
+			return _parts.Remove(part);
 		}
 
 		/// <summary>

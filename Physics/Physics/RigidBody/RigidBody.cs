@@ -285,7 +285,7 @@ namespace Henge3D.Physics
 		/// <param name="force">The direction and magnitude of force to apply.</param>
 		public void ApplyForce(ref Vector3 force)
 		{
-			if (IsActive)
+			if (this.IsActive)
 			{
 				Vector3.Add(ref Force, ref force, out Force);
 			}
@@ -298,7 +298,7 @@ namespace Henge3D.Physics
 		/// <param name="offset">The offset from the center of mass in world-space at which to apply force.</param>
 		public void ApplyForce(ref Vector3 force, ref Vector3 offset)
 		{
-			if (IsActive)
+			if (this.IsActive)
 			{
 				Vector3.Add(ref Force, ref force, out Force);
 
@@ -314,7 +314,7 @@ namespace Henge3D.Physics
 		/// <param name="torque">The axis direction and magnitude of torque to apply.</param>
 		public void ApplyTorque(ref Vector3 torque)
 		{
-			if (IsActive)
+			if (this.IsActive)
 			{
 				Vector3.Add(ref Torque, ref torque, out Torque);
 			}
@@ -349,7 +349,7 @@ namespace Henge3D.Physics
 
 		internal void IntegrateForce(float dt)
 		{
-			if (IsActive)
+			if (this.IsActive)
 			{
 				Vector3 v;
 				Vector3.Multiply(ref Force, dt * MassProperties.MassInverse, out v);

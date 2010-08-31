@@ -30,6 +30,7 @@ namespace Henge3D
 		public override void ApplyTransform(ref Transform transform)
 		{
 			Vector3.Transform(ref _body.Center, ref transform.Combined, out World.Center);
+			World.Radius = _body.Radius * transform.Scale;
 		}
 
 		/// <summary>
@@ -38,8 +39,8 @@ namespace Henge3D
 		/// <param name="aabb">Returns the bounding box for this part.</param>
 		public override void BoundingBox(out AlignedBox aabb)
 		{
-			aabb.Minimum = new Vector3(World.Center.X - _body.Radius, World.Center.Y - _body.Radius, World.Center.Z - _body.Radius);
-			aabb.Maximum = new Vector3(World.Center.X + _body.Radius, World.Center.Y + _body.Radius, World.Center.Z + _body.Radius);
+			aabb.Minimum = new Vector3(World.Center.X - World.Radius, World.Center.Y - World.Radius, World.Center.Z - World.Radius);
+			aabb.Maximum = new Vector3(World.Center.X + World.Radius, World.Center.Y + World.Radius, World.Center.Z + World.Radius);
 		}
 
 		/// <summary>

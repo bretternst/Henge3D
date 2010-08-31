@@ -106,6 +106,7 @@
       <Name>cone</Name>
       <Importer>FbxImporter</Importer>
       <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_DefaultShape>Mesh</ProcessorParameters_DefaultShape>
     </Compile>
   </ItemGroup>
 </Project>

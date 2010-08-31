@@ -23,13 +23,13 @@ namespace Henge3D.Physics
 		const float DefaultLinearErrorTolerance = 0.001f;
 		const float DefaultAngularErrorTolerance = 0.01f;
 		const float DefaultPenetrationBias = 5f;
-		const float DefaultPositionCorrectionFactor = 0.2f;
+		const float DefaultPositionCorrectionFactor = 0.5f;
 		const float DefaultSweepThreshold = 0.25f;
 		const int DefaultMaxPointsPerContact = 16;
 		const int DefaultContactPoolCapacity = 64;
 		const int DefaultIslandPoolCapacity = 16;
 		const int DefaultVelocityIterations = 20;
-		const int DefaultPositionIterations = 5;
+		const int DefaultPositionIterations = 0;
 		const bool DefaultIsSolverWarmStarted = true;
 		const bool DefaultIsContactListSorted = true;
 

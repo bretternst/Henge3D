@@ -91,6 +91,7 @@
     <Compile Include="Physics\Constraints\WorldPointConstraint.cs" />
     <Compile Include="Physics\Constraints\GrabConstraint.cs" />
     <Compile Include="Physics\Forces\MotorForce.cs" />
+    <Compile Include="Physics\Forces\SingularityForce.cs" />
     <Compile Include="Physics\Forces\SpringForce.cs" />
     <Compile Include="Physics\RigidBody\Contraption.cs" />
     <Compile Include="Pipeline\CompiledCapsule.cs" />

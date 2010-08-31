@@ -154,17 +154,15 @@ namespace Henge3D.Physics
 
 		private void ProcessPositionConstraints()
 		{
-			bool reverse = false;
 			for (int i = 0; i < _manager.PositionIterations; i++)
 			{
 				bool satisfied = true;
-				for (int j = reverse ? _constraints.Count - 1 : 0; reverse && j >= 0 || !reverse && j < _constraints.Count; j += reverse ? -1 : 1)
+				for (int j = 0; j < _constraints.Count; j++)
 				{
 					satisfied &= _constraints[j].ProcessPosition();
 				}
 				if (satisfied)
 					break;
-				reverse = !reverse;
 			}
 		}
 	}
