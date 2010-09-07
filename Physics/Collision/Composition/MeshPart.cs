@@ -34,7 +34,7 @@ namespace Henge3D
 		/// </summary>
 		/// <param name="vertices">A list of all vertices contained in the mesh.</param>
 		/// <param name="indices">A list of vertex indices that define the triangles in the mesh.</param>
-		public MeshPart(IList<Vector3> vertices, IList<int> indices)
+		public MeshPart(Vector3[] vertices, int[] indices)
 		{
 			_body = new CompiledMesh(vertices, indices);
 			ApplyTransform(ref Transform);

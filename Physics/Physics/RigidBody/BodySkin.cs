@@ -10,23 +10,22 @@ namespace Henge3D.Physics
 	/// <summary>
 	/// Represents the collision skin of a rigid body, composed of one or more collision parts.
 	/// </summary>
-	public sealed class BodySkin : Composition
+	public class BodySkin : Composition
 	{
 		private List<Material> _materials;
 		private RigidBody _owner;
 		private Material _material;
 		private Transform _transformInverse;
 
-		internal BodySkin(RigidBody owner)
+		public BodySkin()
 		{
-			_owner = owner;
 			_materials = new List<Material>();
 		}
 
 		/// <summary>
 		/// Gets a reference to the body to which this skin belongs.
 		/// </summary>
-		public RigidBody Owner { get { return _owner; } }
+		public RigidBody Owner { get { return _owner; } internal set { _owner = value; } }
 
 		/// <summary>
 		/// Gets or sets the material to be applied by default to all parts.
@@ -55,6 +54,26 @@ namespace Henge3D.Physics
 			if (base.Remove(part))
 			{
 				_materials.RemoveAt(idx);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Changes the material of a part.
+		/// </summary>
+		/// <param name="part">The part to which the material change will apply.</param>
+		/// <param name="material">The part's new material.</param>
+		/// <returns>Returns true if the material was successfully updated, or false if the part does not belong to the composition.</returns>
+		public bool SetMaterial(Part part, Material material)
+		{
+			int idx = this.Parts.IndexOf(part);
+			if (idx >= 0)
+			{
+				_materials[idx] = material;
 				return true;
 			}
 			else

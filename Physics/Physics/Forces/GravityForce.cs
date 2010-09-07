@@ -44,8 +44,11 @@ namespace Henge3D.Physics
 
 			for (int i = 0; i < bodies.Count; i++)
 			{
-				Vector3.Multiply(ref _gravity, bodies[i].Mass.Mass, out f);
-				bodies[i].ApplyForce(ref f);
+				if (!bodies[i].IsWeightless)
+				{
+					Vector3.Multiply(ref _gravity, bodies[i].Mass.Mass, out f);
+					bodies[i].ApplyForce(ref f);
+				}
 			}
 		}
 

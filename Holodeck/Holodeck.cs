@@ -43,7 +43,7 @@ namespace Henge3D.Holodeck
 			gdm.PreferredBackBufferWidth = 1280;
 #endif
 
-			this.IsFixedTimeStep = true;
+			this.IsFixedTimeStep = false;
 			TaskManager.IsThreadingEnabled = false;
 
 			_viewManager = new ViewManager(this);
@@ -69,7 +69,6 @@ namespace Henge3D.Holodeck
 			var state = new FreeLookState(_stateManager);
 			state.MovementSpeed = 10f;
 			_stateManager.SetState(state);
-			_physics.IsIntegratedOnUpdate = true;
 
 			CreateScene(0);
 
@@ -98,7 +97,7 @@ namespace Henge3D.Holodeck
 		{
 			_inputManager.CaptureMouse = this.IsActive && _inputManager.MouseState.RightButton == ButtonState.Pressed;
 #if WINDOWS
-			_physics.IsIntegratedOnUpdate = !Program.Proxy.IsPaused;
+			_physics.Enabled = !Program.Proxy.IsPaused;
 
 			foreach (Keys k in _inputManager.KeysPressed)
 			{
@@ -111,7 +110,7 @@ namespace Henge3D.Holodeck
 						SpawnRagdoll();
 						break;
 					case Keys.N:
-						if (!_physics.IsIntegratedOnUpdate)
+						if (!_physics.Enabled)
 						{
 							_physics.Integrate((float)gameTime.ElapsedGameTime.TotalSeconds);
 						}
@@ -510,6 +509,13 @@ namespace Henge3D.Holodeck
 						_physics.Add(new SingularityForce(new Vector3(0f, 0f, 5f), 1E12f));
 
 						_physics.Gravity = Vector3.Zero;
+
+						var b = new SolidThing(this, cubeModel);
+						b.SetWorld(new Vector3(0f, 0f, 8f),
+							Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathHelper.PiOver4 / 2.0f) *
+							Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathHelper.PiOver4)
+							);
+						_physics.Add(b);
 					}
 					break;
 				default:

@@ -138,8 +138,14 @@ namespace Henge3D.Physics
 			for (int i = 0; i < _constraints.Count; i++)
 			{
 				var c = _constraints[i];
-				c.BodyA.IsActive = true;
-				c.BodyB.IsActive = true;
+				if (c.BodyA != null)
+				{
+					c.BodyA.IsActive = true;
+				}
+				if (c.BodyB != null)
+				{
+					c.BodyB.IsActive = true;
+				}
 				c.PreProcess();
 			}
 			for (int i = 0; i < _manager.VelocityIterations; i++)

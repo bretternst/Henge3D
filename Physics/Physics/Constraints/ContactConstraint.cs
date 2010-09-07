@@ -294,7 +294,7 @@ namespace Henge3D.Physics
 
 					impulse.X = p.Tangent.X * impulseMag; impulse.Y = p.Tangent.Y * impulseMag; impulse.Z = p.Tangent.Z * impulseMag; // Vector3.Multiply(ref p.Tangent, tangentImpulse, out impulse);
 					a.ApplyImpulse(ref impulse, ref p.OffsetA);
-					impulse.X = -impulse.X; impulse.Y = -impulse.Y; impulse.Z -= impulse.Z; // Vector3.Negate(ref impulse, out impulse);
+					impulse.X = -impulse.X; impulse.Y = -impulse.Y; impulse.Z = -impulse.Z; // Vector3.Negate(ref impulse, out impulse);
 					b.ApplyImpulse(ref impulse, ref p.OffsetB);
 				}
 

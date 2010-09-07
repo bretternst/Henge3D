@@ -40,7 +40,7 @@ namespace Henge3D.Physics
 		private BodySkin _skin;
 		private Island _island;
 		private float _inactiveTime = 0f;
-		private bool _isActive = true, _isMovable = true, _isFast = false;
+		private bool _isActive = true, _isMovable = true, _isFast = false, _isWeightless = false;
 		private List<Constraint> _contacts;
 		private List<Constraint> _constraints;
 		private Dictionary<RigidBody, int> _contactStates;
@@ -91,6 +91,11 @@ namespace Henge3D.Physics
 		public bool IsMovable { get { return _isMovable; } }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the body should be affected by gravitational forces.
+		/// </summary>
+		public bool IsWeightless { get { return _isWeightless; } set { _isWeightless = value; } }
+
+		/// <summary>
 		/// Gets the list of all constraints currently being applied to the body. Constraints in this list may be shared with other bodies.
 		/// </summary>
 		public IList<Constraint> Constraints { get { return _constraints; } }
@@ -126,11 +131,23 @@ namespace Henge3D.Physics
 		public RigidBody()
 		{
 			Mass = MassProperties.Immovable;
-			World = Transform.Identity;
+			Transform = World = Transform.Identity;
 			_isMovable = false;
 			_contacts = new List<Constraint>();
 			_constraints = new List<Constraint>();
-			_skin = new BodySkin(this);
+			_skin = new BodySkin();
+			_skin.Owner = this;
+		}
+
+		/// <summary>
+		/// Construct a new rigid body.
+		/// </summary>
+		/// <param name="skin">A pre-constructed body skin to apply.</param>
+		public RigidBody(BodySkin skin)
+			: this()
+		{
+			_skin = skin;
+			_skin.Owner = this;
 		}
 
 		/// <summary>
@@ -140,11 +157,15 @@ namespace Henge3D.Physics
 		public RigidBody(RigidBodyModel model)
 			: this()
 		{
-			MassProperties = model.MassProperties;
-			for (int i = 0; i < model.Parts.Length; i++)
-			{
-				_skin.Add(model.Parts[i].ToCompositionPart(), model.Materials[i]);
-			}
+			this.InitializeFromModel(model);
+		}
+
+		public RigidBody(RigidBodyModel model, BodySkin skin)
+			: this()
+		{
+			_skin = skin;
+			_skin.Owner = this;
+			this.InitializeFromModel(model);
 		}
 
 		/// <summary>
@@ -424,6 +445,15 @@ namespace Henge3D.Physics
 			Vector3.Multiply(ref Velocity.Linear, f, out Velocity.Linear);
 			f = 1f - (1f - Manager.AngularDamping) * Manager.TimeStep;
 			Vector3.Multiply(ref Velocity.Angular, f, out Velocity.Angular);
+		}
+
+		private void InitializeFromModel(RigidBodyModel model)
+		{
+			MassProperties = model.MassProperties;
+			for (int i = 0; i < model.Parts.Length; i++)
+			{
+				_skin.Add(model.Parts[i].ToCompositionPart(), model.Materials[i]);
+			}
 		}
 	}
 }

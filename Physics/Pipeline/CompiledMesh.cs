@@ -57,18 +57,18 @@ namespace Henge3D.Pipeline
 		{
 		}
 
-		public CompiledMesh(IList<Vector3> vertices, IList<int> indices)
+		public CompiledMesh(Vector3[] vertices, int[] indices)
 		{
-			_body = vertices.ToArray();
-			if (indices.Count % 3 != 0)
+			_body = vertices;
+			if (indices.Length % 3 != 0)
 				throw new ArgumentException("Length of index list is not a multiple of 3.");
-			if (indices.Count / 3 > ushort.MaxValue)
+			if (indices.Length / 3 > ushort.MaxValue)
 				throw new ArgumentException("Too many triangles in mesh.");
 
-			_triangles = new int[indices.Count / 3][];
+			_triangles = new int[indices.Length / 3][];
 			_normals = new Vector3[_triangles.Length];
 			int j = 0;
-			for (int i = 0; i < indices.Count; i += 3)
+			for (int i = 0; i < indices.Length; i += 3)
 			{
 				_triangles[j] = new int[] { indices[i], indices[i + 1], indices[i + 2] };
 				Vector3 v12, v13;

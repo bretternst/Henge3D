@@ -23,18 +23,17 @@ namespace Henge3D.Physics
 		const float DefaultLinearErrorTolerance = 0.001f;
 		const float DefaultAngularErrorTolerance = 0.01f;
 		const float DefaultPenetrationBias = 5f;
-		const float DefaultPositionCorrectionFactor = 0.5f;
+		const float DefaultPositionCorrectionFactor = 0.2f;
 		const float DefaultSweepThreshold = 0.25f;
 		const int DefaultMaxPointsPerContact = 16;
 		const int DefaultContactPoolCapacity = 64;
 		const int DefaultIslandPoolCapacity = 16;
 		const int DefaultVelocityIterations = 20;
-		const int DefaultPositionIterations = 0;
+		const int DefaultPositionIterations = 5;
 		const bool DefaultIsSolverWarmStarted = true;
 		const bool DefaultIsContactListSorted = true;
 
 		// engine settings
-		private bool _isIntegratedOnUpdate = true;
 		private float _maxTimeStep = DefaultMaxTimeStep;
 		private float _linearLimit = DefaultLinearLimit;
 		private float _angularLimit = DefaultAngularLimit;
@@ -83,12 +82,6 @@ namespace Henge3D.Physics
 		}
 
 		// exposed config values
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the physics world will be moved forward a step automatically each frame. If this is
-		/// set to false, then the game must manually call the Integrate method.
-		/// </summary>
-		public bool IsIntegratedOnUpdate { get { return _isIntegratedOnUpdate; } set { _isIntegratedOnUpdate = value; } }
 
 		/// <summary>
 		/// Gets or sets the maximum time-step, in seconds, that the physics engine will integrate over. If the current time step is greater
@@ -269,10 +262,7 @@ namespace Henge3D.Physics
 		{
 			base.Update(gameTime);
 
-			if (_isIntegratedOnUpdate)
-			{
-				Integrate((float)gameTime.ElapsedGameTime.TotalSeconds);
-			}
+			this.Integrate((float)gameTime.ElapsedGameTime.TotalSeconds);
 		}
 
 		/// <summary>

@@ -15,7 +15,7 @@ namespace Henge3D.Collision
 
 			DoOverlapTest(cf, a, b, Vector3.Zero);
 		}
-
+			
 		public override void SweptTest(CollisionFunctor cf, Part partA, Part partB, Vector3 delta)
 		{
 			var a = (CapsulePart)partA;

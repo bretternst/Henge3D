@@ -92,6 +92,7 @@ namespace Henge3D
 			output.M41 = position.X;
 			output.M42 = position.Y;
 			output.M43 = position.Z;
+			output.M44 = 1.0f;
 		}
 
 		private static void CombineInverse(float scaleInv, ref Vector3 positionInv, ref Quaternion orientationInv,

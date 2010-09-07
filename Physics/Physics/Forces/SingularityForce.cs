@@ -45,15 +45,18 @@ namespace Henge3D.Physics
 		{
 			for (int i = 0; i < bodies.Count; i++)
 			{
-				Vector3 f;
+				if (!bodies[i].IsWeightless)
+				{
+					Vector3 f;
 
-				Vector3.Subtract(ref _position, ref bodies[i].World.Position, out f);
-				float r2 = f.LengthSquared();
-				f.Normalize();
+					Vector3.Subtract(ref _position, ref bodies[i].World.Position, out f);
+					float r2 = f.LengthSquared();
+					f.Normalize();
 
-				Vector3.Multiply(ref f, (GravitationalConstant * this.Mass * bodies[i].Mass.Mass) / r2, out f);
+					Vector3.Multiply(ref f, (GravitationalConstant * this.Mass * bodies[i].Mass.Mass) / r2, out f);
 
-				bodies[i].ApplyForce(ref f);
+					bodies[i].ApplyForce(ref f);
+				}
 			}
 		}
 	}
