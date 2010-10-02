@@ -358,7 +358,7 @@ namespace Henge3D.Holodeck
 						int size = 9;
 #if WINDOWS
 #else
-						size = 4;
+                        size = 4;
 #endif
 						var models = new Model[] { cubeModel, sphereModel };
 						for (int i = 0; i < size; i++)
