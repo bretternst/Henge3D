@@ -38,7 +38,6 @@ namespace Henge3D.Holodeck
 					effect.AmbientLightColor = Vector3.One * 0.75f;
 					effect.SpecularColor = Vector3.One;
 					effect.PreferPerPixelLighting = true;
-					effect.CommitChanges();
 				}
 			}
 			if (_isColorRandom = isColorRandom)
@@ -51,17 +50,6 @@ namespace Henge3D.Holodeck
 
 		public void Draw(IViewManager view)
 		{
-			if (Constants.DebugCollisions)
-			{
-				view.Device.RenderState.FillMode = FillMode.WireFrame;
-				view.Device.RenderState.CullMode = CullMode.None;
-			}
-			else
-			{
-				view.Device.RenderState.FillMode = FillMode.Solid;
-				view.Device.RenderState.CullMode = CullMode.CullCounterClockwiseFace;
-			}
-
 			foreach (var mesh in _model.Meshes)
 			{
 				foreach (BasicEffect effect in mesh.Effects)

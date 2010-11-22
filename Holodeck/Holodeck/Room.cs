@@ -78,8 +78,8 @@ namespace Henge3D.Holodeck
 			}
 			wallTexture.SetData(pixels);
 
-			_effect = new BasicEffect(game.GraphicsDevice, null);
-			_vertexDeclaration = new VertexDeclaration(game.GraphicsDevice, VertexPositionNormalTexture.VertexElements);
+			_effect = new BasicEffect(game.GraphicsDevice);
+			_vertexDeclaration = VertexPositionNormalTexture.VertexDeclaration;
 			_effect.AmbientLightColor = Vector3.One;
 			_effect.TextureEnabled = true;
 			_effect.Texture = wallTexture;
@@ -87,19 +87,15 @@ namespace Henge3D.Holodeck
 
 		public void Draw(IViewManager view)
 		{
-			view.Device.VertexDeclaration = _vertexDeclaration;
 			_effect.View = view.View;
 			_effect.World = Transform.Combined;
 			_effect.Projection = view.Projection;
-			_effect.Begin();
 			foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
 			{
-				pass.Begin();
+				pass.Apply();
 				view.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
 					_vertices, 0, _vertices.Length, _indices, 0, _indices.Length / 3);
-				pass.End();
 			}
-			_effect.End();
 		}
 	}
 }

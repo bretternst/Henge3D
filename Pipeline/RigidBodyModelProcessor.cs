@@ -85,7 +85,12 @@ namespace Henge3D.Pipeline
 				var meshMass = MassProperties.Immovable;
 				CompiledPart meshPart = null;
 
-				int[] indices = mesh.IndexBuffer.ToArray();
+				if (mesh.MeshParts.Count < 1)
+				{
+					continue;
+				}
+
+				int[] indices = mesh.MeshParts[0].IndexBuffer.Skip(mesh.MeshParts[0].StartIndex).Take(mesh.MeshParts[0].PrimitiveCount * 3).ToArray();
 				Vector3[] vertices = MeshToVertexArray(context.TargetPlatform, mesh);
 
 				if (_windingOrder == WindingOrder.Clockwise)
@@ -199,19 +204,23 @@ namespace Henge3D.Pipeline
 		private static Vector3[] MeshToVertexArray(TargetPlatform platform, ModelMeshContent mesh)
 		{
 			MemoryStream ms;
+			var buffer = mesh.MeshParts[0].VertexBuffer;
+
 			if (platform == TargetPlatform.Xbox360)
 			{
-				ms = new MemoryStream(ReverseByteOrder(mesh.VertexBuffer.VertexData));
+				ms = new MemoryStream(ReverseByteOrder(buffer.VertexData));
 			}
 			else
 			{
-				ms = new MemoryStream(mesh.VertexBuffer.VertexData);
+				ms = new MemoryStream(buffer.VertexData);
 			}
 			BinaryReader reader = new BinaryReader(ms);
 
-			var elems = mesh.MeshParts[0].GetVertexDeclaration();
-			int count = mesh.VertexBuffer.VertexData.Length /
-				VertexDeclaration.GetVertexStrideSize(elems, 0);
+			var elems = buffer.VertexDeclaration.VertexElements;
+			int count = mesh.MeshParts[0].NumVertices;
+
+			ms.Seek(mesh.MeshParts[0].VertexOffset * buffer.VertexDeclaration.VertexStride.Value, SeekOrigin.Begin);
+
 			var vertices = new Vector3[count];
 			for (int i = 0; i < count; i++)
 			{

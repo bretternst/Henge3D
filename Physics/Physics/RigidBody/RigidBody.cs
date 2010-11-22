@@ -43,7 +43,6 @@ namespace Henge3D.Physics
 		private bool _isActive = true, _isMovable = true, _isFast = false, _isWeightless = false;
 		private List<Constraint> _contacts;
 		private List<Constraint> _constraints;
-		private Dictionary<RigidBody, int> _contactStates;
 
 		internal Transform World, WorldInverse;
 		internal Vector3 Force, Torque;

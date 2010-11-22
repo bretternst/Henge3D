@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Holodeck")]
-[assembly: AssemblyProduct("Holodeck")]
+[assembly: AssemblyTitle("Henge3D Holodeck Sample")]
+[assembly: AssemblyProduct("Henge3D")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("")]
 
-[assembly: AssemblyCopyright("Copyright ©  2009")]
+[assembly: AssemblyCopyright("Copyright © 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -30,4 +30,4 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.9.1011.0")]

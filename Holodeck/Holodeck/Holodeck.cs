@@ -247,11 +247,25 @@ namespace Henge3D.Holodeck
 
 		protected override void Draw(GameTime gameTime)
 		{
+			_viewManager.Device.RasterizerState = new RasterizerState()
+			{
+				CullMode = CullMode.CullClockwiseFace,
+				FillMode = Constants.DebugCollisions ? FillMode.WireFrame : FillMode.Solid
+			};
+
 			base.Draw(gameTime);
 
 #if WINDOWS
-			for (int i = 0; i < _markers.Count; i++)
-				_markers[i].Draw(_viewManager);
+			if (Constants.DebugCollisions && _markers.Count > 0)
+			{
+				_viewManager.Device.RasterizerState = new RasterizerState()
+				{
+					CullMode = CullMode.None,
+					FillMode = FillMode.Solid
+				};
+				for (int i = 0; i < _markers.Count; i++)
+					_markers[i].Draw(_viewManager);
+			}
 #else
 			_spriteBatch.Begin(SpriteBlendMode.Additive, SpriteSortMode.FrontToBack,
 				SaveStateMode.SaveState);
@@ -355,28 +369,41 @@ namespace Henge3D.Holodeck
 					break;
 				case 5:
 					{
-						int size = 9;
-#if WINDOWS
-#else
-                        size = 4;
-#endif
-						var models = new Model[] { cubeModel, sphereModel };
-						for (int i = 0; i < size; i++)
-						{
-							for (int j = 0; j < size - i; j++)
-							{
-								for (int k = 0; k < size - i; k++)
-								{
-									var sphere = new SolidThing(this, i % 2 == 0 ? sphereModel : cubeModel);
-									sphere.SetWorld(new Vector3(
-										0.501f * j + 0.25f * i,
-										0.501f * k + 0.25f * i,
-										0.501f * i + 0.5f
-										), Quaternion.Identity);
-									_physics.Add(sphere);
-								}
-							}
-						}
+
+						var plank = new SolidThing(this, obeliskModel);
+						plank.SetWorld(new Vector3(0.0f, 0.0f, 4.0f),
+							Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathHelper.ToRadians(15f)));
+						MassProperties immovableMassProperties = new MassProperties(float.PositiveInfinity, Matrix.Identity);
+						plank.MassProperties = immovableMassProperties;
+						_physics.Add(plank);
+
+						var sphere = new SolidThing(this, sphereModel);
+						sphere.SetWorld(new Vector3(-4.9f, 0.0f, 9.0f), Quaternion.Identity);
+						_physics.Add(sphere);
+
+
+//                        int size = 9;
+//#if WINDOWS
+//#else
+//                        size = 4;
+//#endif
+//                        var models = new Model[] { cubeModel, sphereModel };
+//                        for (int i = 0; i < size; i++)
+//                        {
+//                            for (int j = 0; j < size - i; j++)
+//                            {
+//                                for (int k = 0; k < size - i; k++)
+//                                {
+//                                    var sphere = new SolidThing(this, i % 2 == 0 ? sphereModel : cubeModel);
+//                                    sphere.SetWorld(new Vector3(
+//                                        0.501f * j + 0.25f * i,
+//                                        0.501f * k + 0.25f * i,
+//                                        0.501f * i + 0.5f
+//                                        ), Quaternion.Identity);
+//                                    _physics.Add(sphere);
+//                                }
+//                            }
+//                        }
 					}
 					break;
 				case 6:

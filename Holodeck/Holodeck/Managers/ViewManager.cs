@@ -146,8 +146,6 @@ namespace Henge3D.Holodeck
 		public override void Draw(GameTime gameTime)
 		{
 			_device.Clear(Color.Black);
-			_device.RenderState.CullMode = CullMode.CullClockwiseFace;
-			_device.RenderState.FillMode = FillMode.Solid;
 
 			Vector3 look = this.Direction;
 			Vector3.Add(ref _position, ref look, out look);

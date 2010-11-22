@@ -8,23 +8,22 @@ using Henge3D.Physics;
 
 namespace Henge3D.Holodeck
 {
-	class ScaledCapsule : RigidBody, IVisible
+	class ScaledSphere : RigidBody, IVisible
 	{
 		private Model _model;
 		private Vector3 _diffuseColor;
 		private Matrix _meshTransform;
 
-		public ScaledCapsule(Game game, float length, float radius, Vector3 color)
+		public ScaledSphere(Game game, float radius, Vector3 color)
 		{
-			_model = game.Content.Load<Model>("models/capsule");
-			_meshTransform = _model.Meshes[0].ParentBone.Transform *
-				Matrix.CreateScale(new Vector3(radius / 0.25f, radius / 0.25f, length + (radius * 2)));
+			_model = game.Content.Load<Model>("models/sphere");
 			_diffuseColor = color;
 
-			Vector3 dummy, p1 = new Vector3(0f, 0f, length / 2f), p2 = new Vector3(0f, 0f, -length / 2f);
-			this.MassProperties = MassProperties.FromCapsule(1f, p1, p2, radius, out dummy);
+			_meshTransform = Matrix.CreateScale(radius / 0.25f);
 
-			this.Skin.Add(new CapsulePart(new Capsule(p1, p2, radius)), new Material(0f, 0.5f));
+			this.MassProperties = MassProperties.FromSphere(1f, Vector3.Zero, radius);
+
+			this.Skin.Add(new SpherePart(new Sphere(Vector3.Zero, radius)), new Material(0f, 0.5f));
 
 			foreach (var mesh in _model.Meshes)
 			{
@@ -34,15 +33,12 @@ namespace Henge3D.Holodeck
 					effect.AmbientLightColor = Vector3.One * 0.75f;
 					effect.SpecularColor = Vector3.One;
 					effect.PreferPerPixelLighting = true;
-					effect.CommitChanges();
 				}
 			}
 		}
 
 		public void Draw(IViewManager view)
 		{
-			view.Device.RenderState.CullMode = CullMode.CullCounterClockwiseFace;
-
 			foreach (var mesh in _model.Meshes)
 			{
 				foreach (BasicEffect effect in mesh.Effects)

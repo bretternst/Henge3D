@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{8BF16BEE-FAE8-4361-AFCE-0F41ED563CE7}</ProjectGuid>
+    <ProjectTypeGuids>{96E2B04D-8817-42c6-938A-82C39BA4D311};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
+    <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
+    <ContentRootDirectory>Content</ContentRootDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>HolodeckContent</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.FBXImporter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.TextureImporter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.XImporter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.AudioImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="defaultFont.spritefont">
+      <Name>defaultFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Pipeline\Pipeline.csproj">
+      <Project>{3086E95C-5A76-4E06-A494-F61C2B71FEA2}</Project>
+      <Name>Pipeline</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="models\capsule.fbx">
+      <Name>capsule</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+    </Compile>
+    <Compile Include="models\cone.fbx">
+      <Name>cone</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_DefaultShape>Mesh</ProcessorParameters_DefaultShape>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+    </Compile>
+    <Compile Include="models\lblock.fbx">
+      <Name>lblock</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+    </Compile>
+    <Compile Include="models\obelisk.fbx">
+      <Name>obelisk</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+      <ProcessorParameters_Scale>0.5</ProcessorParameters_Scale>
+    </Compile>
+    <Compile Include="models\slab.fbx">
+      <Name>slab</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+      <ProcessorParameters_Scale>0.5</ProcessorParameters_Scale>
+      <ProcessorParameters_DefaultElasticity>0.6</ProcessorParameters_DefaultElasticity>
+    </Compile>
+    <Compile Include="models\small_cube.fbx">
+      <Name>small_cube</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+    </Compile>
+    <Compile Include="models\sphere.fbx">
+      <Name>sphere</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+      <ProcessorParameters_DefaultElasticity>0.6</ProcessorParameters_DefaultElasticity>
+    </Compile>
+    <Compile Include="models\torus.fbx">
+      <Name>torus</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+    </Compile>
+    <Compile Include="models\triangle.fbx">
+      <Name>triangle</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>RigidBodyModelProcessor</Processor>
+      <ProcessorParameters_WindingOrder>CounterClockwise</ProcessorParameters_WindingOrder>
+      <ProcessorParameters_SwapWindingOrder>True</ProcessorParameters_SwapWindingOrder>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
+  <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

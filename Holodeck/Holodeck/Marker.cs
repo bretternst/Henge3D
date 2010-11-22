@@ -22,36 +22,31 @@ namespace Henge3D.Holodeck
 			this._rotation = rotation;
 			if (_effect == null)
 			{
-				_effect = new BasicEffect(game.GraphicsDevice, null);
+				_effect = new BasicEffect(game.GraphicsDevice);
 				_effect.AmbientLightColor = Vector3.One;
 				_effect.VertexColorEnabled = true;
-				_vDec = new VertexDeclaration(game.GraphicsDevice, VertexPositionColor.VertexElements);
+				_vDec = VertexPositionColor.VertexDeclaration;
 			}
 		}
 
 		public void Draw(IViewManager view)
 		{
-			view.Device.VertexDeclaration = _vDec;
-			view.Device.RenderState.CullMode = CullMode.None;
-			view.Device.RenderState.FillMode = FillMode.Solid;
 			_effect.Projection = view.Projection;
 			_effect.View = view.View;
 			_effect.World = Matrix.CreateScale(0.2f) * 
 				Matrix.CreateRotationX(_rotation) *
 				Matrix.CreateTranslation(_position);
-			_effect.Begin();
+
 			foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
 			{
-				pass.Begin();
+				pass.Apply();
 				view.Device.DrawUserPrimitives(PrimitiveType.TriangleList,
 					new VertexPositionColor[] {
 					new VertexPositionColor(new Vector3(0.0f, -1.0f, 0.0f), _color),
 					new VertexPositionColor(new Vector3(0.0f, 1.0f, 0.0f), _color),
 					new VertexPositionColor(new Vector3(0.0f, 0.0f, 1.0f), _color),
 				}, 0, 1);
-				pass.End();
 			}
-			_effect.End();
 		}
 	}
 }
