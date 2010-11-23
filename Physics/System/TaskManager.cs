@@ -233,7 +233,9 @@ namespace Henge3D
 					TaskPump();
 
 					while (_waitingThreadCount < _threadCount - 1)
+					{
 						Thread.Sleep(0);
+					}
 
 					if (_exceptions.Count > 0)
 					{
@@ -260,11 +262,15 @@ namespace Henge3D
 		public void Dispose()
 		{
 			_disposing = true;
-            if (_running)
-            {
-                _managerWaitHandleA.Set();
-                _managerWaitHandleB.Set();
-            }
+			try
+			{
+				_managerWaitHandleA.Set();
+				_managerWaitHandleB.Set();
+			}
+			catch(ObjectDisposedException)
+			{
+				// Necessary on windows phone for some reason.
+			}
 		}
 
 		private void ThreadProc()
@@ -275,17 +281,25 @@ namespace Henge3D
 				_managerWaitHandleA.WaitOne();
 
 				if (_disposing)
+				{
 					return;
+				}
 				else
+				{
 					TaskPump();
+				}
 
 				Interlocked.Increment(ref _waitingThreadCount);
 				_managerWaitHandleB.WaitOne();
 
 				if (_disposing)
+				{
 					return;
+				}
 				else
+				{
 					TaskPump();
+				}
 			}
 		}
 
