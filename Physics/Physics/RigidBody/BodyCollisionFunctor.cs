@@ -177,14 +177,29 @@ namespace Henge3D.Physics
 		{
 			for (int i = 0; i < _items.Length; i++)
 			{
+				if(_items[i].Count < 1)
+				{
+					continue;
+				}
+
+				int pos = 0;
 				for (int j = 0; j < _items[i].Count; j++)
 				{
 					var c = _items[i][j];
 					if (c.BodyA.IsActive || c.BodyB.IsActive ||
 						c.BodyA.Manager != _manager || c.BodyB.Manager != _manager)
+					{
 						_alloc[i].Recycle(c);
+					}
+					else
+					{
+						_items[i][pos++] = _items[i][j];
+					}
 				}
-				_items[i].RemoveAll((c) => c.BodyA == null || c.BodyB == null);
+				if(pos < _items[i].Count)
+				{
+					_items[i].RemoveRange(pos, _items[i].Count - pos);
+				}
 			}
 		}
 

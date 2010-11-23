@@ -8,8 +8,6 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 using Henge3D.Physics;
 
 namespace Henge3D.Holodeck
@@ -25,7 +23,7 @@ namespace Henge3D.Holodeck
 		private SpriteBatch _spriteBatch;
 		private List<Marker> _markers = new List<Marker>();
 
-#if WINDOWS
+#if WINDOWS || WINDOWS_PHONE
 		private RigidBody _pickedObject;
 		private GrabConstraint _pickedForce;
 		private float _pickedDistance;
@@ -41,6 +39,10 @@ namespace Henge3D.Holodeck
 			gdm.IsFullScreen = true;
 			gdm.PreferredBackBufferHeight = 720;
 			gdm.PreferredBackBufferWidth = 1280;
+#elif WINDOWS_PHONE
+            gdm.IsFullScreen = true;
+            gdm.PreferredBackBufferHeight = 800;
+            gdm.PreferredBackBufferWidth = 400;
 #endif
 
 			this.IsFixedTimeStep = false;
@@ -98,7 +100,9 @@ namespace Henge3D.Holodeck
 			_inputManager.CaptureMouse = this.IsActive && _inputManager.MouseState.RightButton == ButtonState.Pressed;
 #if WINDOWS
 			_physics.Enabled = !Program.Proxy.IsPaused;
+#endif
 
+#if WINDOWS || WINDOWS_PHONE
 			foreach (Keys k in _inputManager.KeysPressed)
 			{
 				switch (k)
@@ -127,6 +131,10 @@ namespace Henge3D.Holodeck
 					case Keys.D9:
 						CreateScene(k - Keys.D0);
 						break;
+                    case Keys.Escape:
+                    case Keys.Q:
+                        this.Exit();
+                        break;
 				}
 			}
 
@@ -176,7 +184,7 @@ namespace Henge3D.Holodeck
 			if (_inputManager.WasPressed(Buttons.A)) SpawnSelectedObject();
 			if (_inputManager.WasPressed(Buttons.B)) SpawnRagdoll();
 			if (_inputManager.WasPressed(Buttons.X)) 
-				_physics.IsIntegratedOnUpdate = !_physics.IsIntegratedOnUpdate;
+				_physics.Enabled = !_physics.Enabled;
 			if (_inputManager.WasPressed(Buttons.Y)) _physics.Integrate((float)gameTime.ElapsedGameTime.TotalSeconds);
 			if (_inputManager.WasPressed(Buttons.Back)) this.Exit();
 #endif
@@ -252,6 +260,7 @@ namespace Henge3D.Holodeck
 				CullMode = CullMode.CullClockwiseFace,
 				FillMode = Constants.DebugCollisions ? FillMode.WireFrame : FillMode.Solid
 			};
+			_viewManager.Device.SamplerStates[0] = SamplerState.LinearWrap;
 
 			base.Draw(gameTime);
 
@@ -267,14 +276,16 @@ namespace Henge3D.Holodeck
 					_markers[i].Draw(_viewManager);
 			}
 #else
-			_spriteBatch.Begin(SpriteBlendMode.Additive, SpriteSortMode.FrontToBack,
-				SaveStateMode.SaveState);
-			_spriteBatch.DrawString(_defaultFont, framesPerSecond.ToString(),
-				new Vector2(GraphicsDevice.DisplayMode.TitleSafeArea.Left + 10f,
-					GraphicsDevice.DisplayMode.TitleSafeArea.Top + 10f), Color.AliceBlue);
-			_spriteBatch.End();
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
+            _spriteBatch.DrawString(_defaultFont, framesPerSecond.ToString(),
+                new Vector2(GraphicsDevice.DisplayMode.TitleSafeArea.Left + 10f,
+                    GraphicsDevice.DisplayMode.TitleSafeArea.Top + 10f), Color.AliceBlue);
+            _spriteBatch.End();
+
+            _viewManager.Device.BlendState = BlendState.Opaque;
+            _viewManager.Device.DepthStencilState = DepthStencilState.Default;
 #endif
-		}
+        }
 
 		static Random _rand = new Random();
 		public void CreateScene(int sceneNumber)

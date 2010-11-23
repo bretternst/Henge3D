@@ -18,9 +18,7 @@ namespace Henge3D.Physics
 				{
 					return x is ContactConstraint ? 1 : -1;
 				}
-				float d = MathHelper.Min(x.BodyA.World.Position.Z, x.BodyB != null ? x.BodyB.World.Position.Z : 0f) -
-					MathHelper.Min(y.BodyA.World.Position.Z, y.BodyB != null ? y.BodyB.World.Position.Z : 0f);
-				return d == 0f ? 0 : (d > 0f ? 1 : -1);
+				return x.ConstraintId - y.ConstraintId;
 			}
 		}
 
@@ -51,15 +49,19 @@ namespace Henge3D.Physics
 				return;
 			}
 
-			if(_manager.IsContactListSorted)
+			if (_manager.IsConstraintListSorted)
+			{
 				_constraints.Sort(_constraintComparator);
+			}
 
 			// process constraints for velocity
 			ProcessVelocityConstraints();
 
 			// integrate position
 			for (int i = 0; i < _bodies.Count; i++)
+			{
 				_bodies[i].IntegrateVelocity(dt);
+			}
 
 			// process constraints for position
 			ProcessPositionConstraints();

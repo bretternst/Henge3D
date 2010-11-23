@@ -47,6 +47,7 @@ namespace Henge3D.Holodeck
 #else
 		static void Main(string[] args)
 		{
+			Thread.Sleep(10000);
 			using (Holodeck game = new Holodeck())
 			{
 				game.Run();

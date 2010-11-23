@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Henge3D.Physics
 {
@@ -10,10 +11,14 @@ namespace Henge3D.Physics
 	/// </summary>
 	public abstract class Constraint
 	{
+		private static int CurrentConstraintId = 0;
+
 		private PhysicsManager _manager;
 		private Island _island;
 		private RigidBody _bodyA, _bodyB;
 		private bool _isCollisionEnabled = true;
+
+		internal int ConstraintId;
 
 		/// <summary>
 		/// Construct a new constraint.
@@ -24,6 +29,8 @@ namespace Henge3D.Physics
 		{
 			_bodyA = bodyA;
 			_bodyB = bodyB;
+
+			this.ConstraintId = Interlocked.Increment(ref CurrentConstraintId);
 		}
 
 		/// <summary>

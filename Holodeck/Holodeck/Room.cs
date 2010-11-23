@@ -66,7 +66,7 @@ namespace Henge3D.Holodeck
 				);
 			this.SetWorld(_scale, Vector3.Zero, Quaternion.Identity);
 
-			int ts = 40;
+			int ts = 32;
 			Texture2D wallTexture = new Texture2D(game.GraphicsDevice, ts, ts);
 			Color[] pixels = new Color[ts * ts];
 			for (int i = 0; i < ts; i++)

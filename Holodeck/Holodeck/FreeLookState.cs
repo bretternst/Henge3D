@@ -27,7 +27,8 @@ namespace Henge3D.Holodeck
 		{
 			float delta = (float)time.ElapsedGameTime.TotalSeconds;
 			Vector3 moveVector = Vector3.Zero;
-#if WINDOWS
+
+#if WINDOWS || WINDOWS_PHONE
 			_camera.Pitch += _input.MouseDelta.Y * _input.MouseSensitivity;
 			_camera.Yaw -= _input.MouseDelta.X * _input.MouseSensitivity;
 

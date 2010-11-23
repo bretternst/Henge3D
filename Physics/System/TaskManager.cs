@@ -65,17 +65,18 @@ namespace Henge3D
 	public class TaskManager : IDisposable
 	{
 		private static readonly int[] _xBoxCoreMap = new int[] { 1, 3, 4, 5 };
-		private static LocalDataStoreSlot _threadIndexStoreSlot = Thread.AllocateDataSlot();
 		private static TaskManager _current;
 		private static int _threadCount;
 		private static bool _isThreadingEnabled = true;
 
 		static TaskManager()
 		{
-#if XBOX
-			_threadCount = _xBoxCoreMap.Length;
-#elif WINDOWS
+#if WINDOWS
 			_threadCount = System.Environment.ProcessorCount;
+#elif XBOX
+			_threadCount = _xBoxCoreMap.Length;
+#else
+			_threadCount = 1;
 #endif
 		}
 
@@ -110,18 +111,24 @@ namespace Henge3D
 		{
 			get
 			{
-				object o = Thread.GetData(_threadIndexStoreSlot);
-				return o == null ? 0 : (int)o;
+				for (int i = 0; i < _threadCount; i++)
+				{
+					if (_current._threads[i].ManagedThreadId == Thread.CurrentThread.ManagedThreadId)
+					{
+						return i;
+					}
+				}
+				return -1;
 			}
 		}
 
-		volatile bool _disposing = false, _running = false;
-		volatile int _waitingThreadCount = 0, _currentTaskIndex = 0;
-		volatile List<Action<TaskParams>> _tasks;
-		volatile List<TaskParams> _params;
+		private volatile bool _disposing = false, _running = false;
+		private volatile int _waitingThreadCount = 0, _currentTaskIndex = 0;
+		private volatile List<Action<TaskParams>> _tasks;
+		private volatile List<TaskParams> _params;
+		private Thread[] _threads;
 
 		private object _exceptionsLock;
-		private Thread[] _threads;
 		private List<TaskException> _exceptions;
 		private AutoResetEvent _taskInitWaitHandle;
 		private ManualResetEvent _managerWaitHandleA, _managerWaitHandleB, _managerCurrentWaitHandle;
@@ -139,7 +146,6 @@ namespace Henge3D
 			_managerCurrentWaitHandle = _managerWaitHandleA;
 
 			_threads[0] = Thread.CurrentThread;
-			Thread.SetData(_threadIndexStoreSlot, 0);
 
 #if XBOX
 			Thread.CurrentThread.SetProcessorAffinity(_xBoxCoreMap[0]);
@@ -152,7 +158,6 @@ namespace Henge3D
 #if XBOX
 						Thread.CurrentThread.SetProcessorAffinity(_xBoxCoreMap[i]);
 #endif
-						Thread.SetData(_threadIndexStoreSlot, i);
 						_taskInitWaitHandle.Set();
 						ThreadProc();
 					});
@@ -255,8 +260,11 @@ namespace Henge3D
 		public void Dispose()
 		{
 			_disposing = true;
-			_managerWaitHandleA.Set();
-			_managerWaitHandleB.Set();
+            if (_running)
+            {
+                _managerWaitHandleA.Set();
+                _managerWaitHandleB.Set();
+            }
 		}
 
 		private void ThreadProc()

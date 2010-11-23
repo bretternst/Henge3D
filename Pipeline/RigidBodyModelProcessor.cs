@@ -206,14 +206,14 @@ namespace Henge3D.Pipeline
 			MemoryStream ms;
 			var buffer = mesh.MeshParts[0].VertexBuffer;
 
-			if (platform == TargetPlatform.Xbox360)
-			{
-				ms = new MemoryStream(ReverseByteOrder(buffer.VertexData));
-			}
-			else
-			{
+//			if (platform == TargetPlatform.Xbox360)
+//			{
+//				ms = new MemoryStream(ReverseByteOrder(buffer.VertexData));
+//			}
+//			else
+//			{
 				ms = new MemoryStream(buffer.VertexData);
-			}
+//			}
 			BinaryReader reader = new BinaryReader(ms);
 
 			var elems = buffer.VertexDeclaration.VertexElements;

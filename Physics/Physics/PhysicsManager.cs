@@ -198,10 +198,10 @@ namespace Henge3D.Physics
 		public bool IsSolverWarmStarted { get { return _isSolverWarmStarted; } set { _isSolverWarmStarted = value; } }
 
 		/// <summary>
-		/// Gets or sets a value determining whether contacts are sorted. Setting this to true adds extra overhead each frame. However, when
-		/// threading is enabled, contact sorting is required to achieve deterministic behavior.
+		/// Gets or sets a value determining whether constraints are sorted prior to solving. Setting this to true adds extra overhead each frame.
+		/// However, when threading is enabled, contact sorting is required to achieve deterministic behavior.
 		/// </summary>
-		public bool IsContactListSorted { get { return _isContactListSorted; } set { _isContactListSorted = value; } }
+		public bool IsConstraintListSorted { get { return _isContactListSorted; } set { _isContactListSorted = value; } }
 
 		/// <summary>
 		/// Gets or sets the amount of gravity applied to all objects.

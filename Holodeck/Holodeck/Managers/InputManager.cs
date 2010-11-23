@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace Henge3D.Holodeck
 {
@@ -16,6 +17,8 @@ namespace Henge3D.Holodeck
 		private GamePadState _gamePadState, _lastGamePadState;
 		private MouseState? _preCaptureMouseState;
 		private MouseState _mouseState, _lastMouseState;
+		private Vector2 _touchPosition, _lastTouchPosition;
+		
 		private KeyboardState _keyboardState, _lastKeyboardState;
 		private float _mouseSensitivity = DefaultMouseSensitivity;
 		private bool _captureMouse = true;
@@ -31,6 +34,8 @@ namespace Henge3D.Holodeck
 		public GamePadState GamePadState { get { return _gamePadState; } }
 		public MouseState LastMouseState { get { return LastMouseState; } }
 		public MouseState MouseState { get { return _mouseState; } }
+		public Vector2 LastTouchPosition { get { return _lastTouchPosition; } }
+		public Vector2 TouchPosition { get { return _touchPosition; } }
 		public KeyboardState KeyboardState { get { return _keyboardState; } }
 		public float MouseSensitivity { get { return _mouseSensitivity; } set { _mouseSensitivity = value; } }
 
@@ -38,9 +43,21 @@ namespace Henge3D.Holodeck
 		{
 			get
 			{
+#if WINDOWS_PHONE
+				if (float.IsNaN(_lastTouchPosition.X) ||
+					float.IsNaN(_touchPosition.X))
+				{
+					return Vector2.Zero;
+				}
+				else
+				{
+					return _touchPosition - _lastTouchPosition;
+				}
+#else
 				return new Vector2(
 					CaptureMouse ? _mouseState.X - MouseCenterPositionX : 0,
 					CaptureMouse ? _mouseState.Y - MouseCenterPositionY : 0);
+#endif
 			}
 		}
 
@@ -113,9 +130,20 @@ namespace Henge3D.Holodeck
 			_lastKeyboardState = _keyboardState;
 			_lastGamePadState = _gamePadState;
 			_lastMouseState = _mouseState;
+			_lastTouchPosition = _touchPosition;
 			_gamePadState = GamePad.GetState(0);
 			_mouseState = Mouse.GetState();
 			_keyboardState = Keyboard.GetState();
+
+			var touches = TouchPanel.GetState();
+			if (touches.Count > 0)
+			{
+				_touchPosition = touches[0].Position;
+			}
+			else
+			{
+				_touchPosition = new Vector2(float.NaN, float.NaN);
+			}
 
 			if (this.CaptureMouse)
 			{
